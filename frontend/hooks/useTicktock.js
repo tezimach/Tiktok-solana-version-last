@@ -39,17 +39,53 @@ const getTicktocks =async()=>{
  }
 
  const likeVideo = async (address)=>{
-
+  console.log('Video has been liked!')
+  const tx= await program.rpc.likeVideo({
+    accounts:{
+    video:new PublicKey(address),
+    authority:wallet.publicKey,
+    ...defaultAccounts
+    },
+  })
+  console.log(tx)
  }
 
  const createComment= async(addresss, count , comment)=>{
-
- }
+    let [comment_pda] = anchor.web3.PublicKey.findProgramAddressSync(
+        [
+            utf8.encode('comment'),
+            new PublicKey(address).toBuffer(),
+            new BN(count).toArrayLike(Buffer, 'be', 8),
+    ],
+    program.programId,
+      )
+    
+      if(userDetail)
+      {
+        const tx = await program.rpc.createComment(
+            comment,
+            userDetail.userName,
+            userDetail.userProfileImage,
+            {
+            accounts:{
+                Video: new PublicKey(address),
+                comment: comment_pda,
+                authority: wallet.publicKey,
+                ...defaultAccounts
+    
+            },
+        },
+        )
+        console.log(tx)
+      }
+     }
+    
+    
 
  const  newVideo = async()=>{
     const randomKey = anchor.web3.Keypair.generate().publicKey;
 
-    let [video_pda]= await anchor.web3.PublicKey.findProgramAddressSync(
+    let [video_pda]=  anchor.web3.PublicKey.findProgramAddressSync(
         [utf8.encode('video'), randomKey.toBuffer()],
         program.programId,
     )
@@ -77,11 +113,28 @@ const getTicktocks =async()=>{
 
  }
  const getComments = async(address, count)=>{
+  let commentSigners=[]
+  for(let i = 0; i < count; i++)
+  {
+    let [commentSigner]= anchor.web3.PublicKey.findProgramAddressSync(
+        [
+            utf8.encode('comment'),
+            new PublicKey(address).toBuffer(),
+            new BN(1).toArrayLike(Buffer,'be',8)
+        ],
+        program.programId,
+    )
+    commentSigners.push(commentSigner)
+  }
 
+  const comments = await program.account.commentAccount.fetchMultiple(
+    commentSigners,
+  )
+
+  console.log(comments)
+  return comments
  }
-
  return { getTicktocks , likeVideo , createComment , newVideo , getComments}
-
 }
 
 export  default useTicktock;

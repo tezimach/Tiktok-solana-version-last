@@ -169,7 +169,7 @@ pub struct CreateComment<'info> {
 
     #[account(
         init,
-        seeds=[b"coment".as_ref(),video.key().as_ref(), video.comment_count.to_be_bytes().as_ref()],
+        seeds=[b"comment".as_ref(),video.key().as_ref(), video.comment_count.to_be_bytes().as_ref()],
         bump, 
         payer=authority,
         space = size_of::<CommentAccount>() + TEXT_LENGTH + USER_NAME_LENGTH + USER_URL_LENGTH+VIDEO_URL_LENGTH 
