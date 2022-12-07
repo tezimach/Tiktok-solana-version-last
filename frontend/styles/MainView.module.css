@@ -1,0 +1,19 @@
+.appVideo{
+position:relative;
+height: 800px;
+border-radius: 20px 20px 0 0;
+margin-left:47px;
+overflow:scroll;
+width:80%;
+max-width: 500px;
+scroll-snap-align: y mandatory ;
+}
+
+.appVideo::-webkit-scrollbar{
+display:none;
+}
+
+.appvideos{
+    -ms-overflow-style:none;
+    scrollbar-width: none;
+}
